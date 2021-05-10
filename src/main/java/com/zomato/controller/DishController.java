@@ -19,6 +19,7 @@ import com.zomato.response.DishRegistrationResponseVO;
 import com.zomato.response.RegisteredDishesResponse;
 import com.zomato.response.ResponseMessageVO;
 import com.zomato.service.DishService;
+import com.zomato.util.ValidationUtil;
 
 @RestController
 public class DishController {
@@ -29,24 +30,18 @@ public class DishController {
 	@PostMapping(value="/registerDish")
 	public ResponseEntity<DishRegistrationResponseVO> registerDish(@RequestBody DishDetailsVO details){
 		logger.info("DishController regiserDish method ");
-		//todo : validate each field of DishDetailsVO if fail throw exception
+		ValidationUtil.validateRegistrationDetails(details);
 		DishRegistrationResponseVO response=null;
-		 if(details!=null){
-			response= dishService.registerDish(details);
-		 }		 
-		 return new ResponseEntity<>(response,HttpStatus.OK);
+		 response= dishService.registerDish(details);
+	     return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
 	@PutMapping(value="/updateDish")
 	public ResponseEntity<ResponseMessageVO> updateDish(@RequestBody DishDetailsVO updatedDetails){
 		ResponseMessageVO response=null;
 		logger.info("DishController updateDish method ");
-	 //todo : validate each field of DishDetailsVO if fail throw exception
-		if(updatedDetails!=null){
+	    ValidationUtil.validateDishUpdationDetails(updatedDetails);
 		response = dishService.updateDish(updatedDetails);
-		}else{
-			//throw the exception
-		}
 		return new ResponseEntity<>(response,HttpStatus.OK);
 	}
 	
