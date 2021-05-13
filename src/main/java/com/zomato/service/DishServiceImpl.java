@@ -14,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.zomato.domain.DishEntity;
+import com.zomato.exception.DishNotFoundException;
 import com.zomato.repository.DishRepository;
 import com.zomato.requestvo.DishDetailsVO;
 import com.zomato.response.DishDescriptionResponseVO;
@@ -58,6 +59,7 @@ public class DishServiceImpl implements DishService {
 			responseVO.setDishType(response.getCuisineType());
 			List<String> ingredientList = new ArrayList<String>(Arrays.asList(response.getIngredients().split(" , ")));
 			responseVO.setIngredients(ingredientList);
+			responseVO.setCookingInstructions(response.getCookingInstructions());
 			responseVO.setSuccess(true);
 			responseVO.setMessage("Dish registered successfully with Zomato");
 			List<String> detail = new ArrayList<>();
@@ -79,15 +81,15 @@ public class DishServiceImpl implements DishService {
 	@Override
 	public ResponseMessageVO updateDish(DishDetailsVO updatedDetails) {
 		logger.info("DishServiceImpl updateDish method");
-		Optional<DishEntity> entity =Optional.empty();
+		Optional<DishEntity> entity =null;
 		DishEntity response =null;
 		ResponseMessageVO responseMessage=null;
 		if(updatedDetails !=null){
 			try{
 			entity =dishRepository.findById(updatedDetails.getDishId());
-			if(entity.isPresent()){
+			  if(entity.isPresent()){
 				response=entity.get();
-				response.setCookingInstructions(updatedDetails.getCookingInstrucion());
+			    response.setCookingInstructions(updatedDetails.getCookingInstrucion());
 				response.setIngredients(convertIngredients(updatedDetails.getIngredients()));
 				try{
 					dishRepository.save(response);
@@ -176,8 +178,40 @@ public class DishServiceImpl implements DishService {
 		   response.setDetails(Arrays.asList(response.getMessage()));
 		   return response;
 	}
+
+	@Override
+	public DishRegistrationResponseVO getDishById(Integer dishId) {
+		Optional<DishEntity> entity =Optional.empty();
+		DishEntity response =null;
+		DishRegistrationResponseVO resp =null;
+		  if(dishId!=null){
+			  entity =dishRepository.findById(dishId);
+			  if(entity.isPresent()){
+					response=entity.get();
+				    resp =new DishRegistrationResponseVO();
+				    resp.setCode("200");
+				    resp.setDishId(response.getCuisineId());
+				    resp.setDishType(response.getCuisineType());
+				    resp.setDishName(response.getCuisineName());
+				    resp.setSuccess(true);
+				    resp.setMessage("Dish details fetched successfully..");
+				    resp.setDetails(Arrays.asList(resp.getMessage()));
+				    resp.setIngredients(new ArrayList<String>(Arrays.asList(response.getIngredients().split(" , "))));
+		            resp.setCookingInstructions(response.getCookingInstructions());
+				    return resp;
+			  }
+			  }
+			  resp = new DishRegistrationResponseVO();
+			   resp.setCode("404");
+			   resp.setSuccess(false);
+			   resp.setMessage("Sorry!! Dishes doesn't exist. ");
+			   resp.setDetails(Arrays.asList(resp.getMessage()));
+		 
+		
+		return resp;
+	}
 	
+}	
+
 	
 
-
-}

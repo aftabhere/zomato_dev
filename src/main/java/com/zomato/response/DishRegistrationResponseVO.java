@@ -6,8 +6,16 @@ public class DishRegistrationResponseVO extends ResponseMessageVO {
 	private int dishId;
 	private String dishName;
 	private String dishType;
-	private List<String> ingredients;	
+	private List<String> ingredients;
+	private String cookingInstructions;
 	
+	
+	public String getCookingInstructions() {
+		return cookingInstructions;
+	}
+	public void setCookingInstructions(String cookingInstructions) {
+		this.cookingInstructions = cookingInstructions;
+	}
 	public List<String> getIngredients() {
 		return ingredients;
 	}

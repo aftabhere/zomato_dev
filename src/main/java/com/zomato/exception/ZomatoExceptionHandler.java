@@ -16,24 +16,42 @@ public class ZomatoExceptionHandler extends ResponseEntityExceptionHandler {
 	
 	@ExceptionHandler(value=InvalidDishRegistrationException.class)
 	public ResponseEntity<ResponseMessageVO> handleInvalidDishRegistrationException(InvalidDishRegistrationException ex){
-		ResponseMessageVO exceptionMessage = new ResponseMessageVO();
+		ResponseMessageVO exceptionMessage = createExceptionResponse(ex);
 		exceptionMessage.setCode("400");
-		exceptionMessage.setSuccess(false);
-		exceptionMessage.setMessage(ex.getMessage());
-		exceptionMessage.setDetails(new ArrayList(Arrays.asList(exceptionMessage.getMessage())));
 		return new ResponseEntity<>(exceptionMessage,HttpStatus.BAD_REQUEST);
 		
 	}
 	
-	@ExceptionHandler(value=DishDetailsUpdationException.class)
-	public ResponseEntity<ResponseMessageVO> handleDishDetailsUpdationException(DishDetailsUpdationException ex){
-		ResponseMessageVO exceptionMessage = new ResponseMessageVO();
+	@ExceptionHandler(value=DishDetailsValidationException.class)
+	public ResponseEntity<ResponseMessageVO> handleDishDetailsUpdationException(DishDetailsValidationException ex){
+		ResponseMessageVO exceptionMessage = createExceptionResponse(ex);
 		exceptionMessage.setCode("400");
-		exceptionMessage.setSuccess(false);
-		exceptionMessage.setMessage(ex.getMessage());
-		exceptionMessage.setDetails(new ArrayList(Arrays.asList(exceptionMessage.getMessage())));
 		return new ResponseEntity<>(exceptionMessage,HttpStatus.BAD_REQUEST);
 		
 	}
+	
+	@ExceptionHandler(value=DishNotFoundException.class)
+	public ResponseEntity<ResponseMessageVO> handleDishNotFoundException(DishNotFoundException ex){
+		ResponseMessageVO exceptionMessage = createExceptionResponse(ex);				
+		exceptionMessage.setCode("400");
+		return new ResponseEntity<>(exceptionMessage,HttpStatus.NOT_FOUND);
+		
+	}
+	
+	@ExceptionHandler(value=InvalidDetailsException.class)
+	public ResponseEntity<ResponseMessageVO> handledeleteDishById(InvalidDetailsException ex){
+		ResponseMessageVO exceptionMessage = createExceptionResponse(ex);
+		exceptionMessage.setCode("406");
+		return new ResponseEntity<>(exceptionMessage,HttpStatus.NOT_ACCEPTABLE);
+	}
+	
+	public ResponseMessageVO createExceptionResponse(Exception ex){
+		ResponseMessageVO exceptionMessage = new ResponseMessageVO();
+		exceptionMessage.setSuccess(false);
+		exceptionMessage.setMessage(ex.getMessage());
+		exceptionMessage.setDetails(new ArrayList<>(Arrays.asList(exceptionMessage.getMessage())));
+		return exceptionMessage;
+	}
+	
 
 }

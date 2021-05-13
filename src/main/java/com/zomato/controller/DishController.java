@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,8 +26,8 @@ public class DishController {
 	private static final Logger logger = LoggerFactory.getLogger(DishController.class);
 	@Autowired
 	DishService dishService;
-	
-	@PostMapping(value="/registerDish")
+		
+	@RequestMapping(value="/registerDish")
 	public ResponseEntity<DishRegistrationResponseVO> registerDish(@RequestBody DishDetailsVO details){
 		logger.info("DishController regiserDish method ");
 		ValidationUtil.validateRegistrationDetails(details);
@@ -51,10 +51,16 @@ public class DishController {
 		return new ResponseEntity<>(dishService.getAllRegisteredDishes(),HttpStatus.OK);
 	}
 	
+	@GetMapping(value="/getDishByID/{id}")
+	public ResponseEntity<DishRegistrationResponseVO> getDishDetailsById(@PathVariable Integer id){	
+		logger.info("DishController getDishDetailsById method ");
+		 return new ResponseEntity<>(dishService.getDishById(id),HttpStatus.OK);
+	}
+	
 	@DeleteMapping(value="/deleteDishById")
 	public ResponseEntity<ResponseMessageVO> deleteDishById(@RequestParam Integer dishId){
 		logger.info("DishController deleteDishById method ");
-		//to do : validate request if null throw exception
+		ValidationUtil.validateDeleteDishById(dishId);		
 		return new ResponseEntity<>(dishService.deleteDishById(dishId),HttpStatus.OK);
 	}
 

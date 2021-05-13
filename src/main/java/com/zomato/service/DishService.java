@@ -15,5 +15,7 @@ public interface DishService {
 	public RegisteredDishesResponse getAllRegisteredDishes();
 	
 	public ResponseMessageVO deleteDishById(Integer dishId);
+	
+	public DishRegistrationResponseVO getDishById(Integer dishId);
 
 }

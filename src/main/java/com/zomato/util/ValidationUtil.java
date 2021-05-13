@@ -1,6 +1,7 @@
 package com.zomato.util;
 
-import com.zomato.exception.DishDetailsUpdationException;
+import com.zomato.exception.DishDetailsValidationException;
+import com.zomato.exception.InvalidDetailsException;
 import com.zomato.exception.InvalidDishRegistrationException;
 import com.zomato.requestvo.DishDetailsVO;
 
@@ -20,8 +21,14 @@ public class ValidationUtil {
 					         || detail.getCookingInstrucion().isEmpty()
 					         || detail.getIngredients()==null  
 					         || detail.getIngredients().isEmpty()){
-				throw new DishDetailsUpdationException("missing cookinginstruction/ingredients for dish updation");
+				throw new DishDetailsValidationException("missing cookinginstruction/ingredients for dish updation");
 				
 			}
+		 }
+		 
+		 public static void validateDeleteDishById(Integer id){
+			 if(id==null || id==0){
+				 throw new InvalidDetailsException("Invalid details found..");
+			 }
 		 }
 }
